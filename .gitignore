@@ -1,0 +1,84 @@
+# Python bytecode and interpreter artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+
+# Virtual environments (keep uv.lock tracked)
+.venv/
+venv/
+env/
+ENV/
+
+# Packaging and build outputs
+build/
+dist/
+wheels/
+*.egg-info/
+*.egg
+pip-wheel-metadata/
+
+# Test, coverage, type-check, and lint caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.tox/
+.nox/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+pytestdebug.log
+
+# Jupyter and general caches
+.ipynb_checkpoints/
+.cache/
+
+# IDE and editor state
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Operating-system metadata
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+secrets*.json
+
+# Logs, crashes, and temporary files
+*.log
+*.tmp
+*.temp
+*.bak
+core
+core.*
+mujoco*.log
+
+# Generated experiments and training outputs
+artifacts/
+runs/
+outputs/
+checkpoints/
+tensorboard/
+videos/
+*.tfevents.*
+*.pt
+*.pth
+*.ckpt
+
+# The reviewed release checkpoint is intentionally tracked.
+!models/ppo_flymaze_mvp.zip

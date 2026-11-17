@@ -1,0 +1,58 @@
+[project]
+name = "flymaze"
+version = "0.1.0"
+description = "Reproducible embodied-navigation experiments with FlyGym and MuJoCo"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "flygym[rl]==2.1.1",
+    "torch>=2.8",
+]
+
+[project.scripts]
+flymaze = "flymaze.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.13.7,<0.14.0"]
+build-backend = "uv_build"
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+
+[dependency-groups]
+dev = [
+    "mypy>=2.4.1",
+    "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.17.4",
+]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers"
+testpaths = ["tests"]
+markers = [
+    "integration: exercises FlyGym and MuJoCo",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "RUF"]
+
+[tool.mypy]
+python_version = "3.12"
+check_untyped_defs = true
+disallow_untyped_defs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = ["flygym.*", "flygym_demo.*", "mujoco.*", "scipy.*"]
+ignore_missing_imports = true
+

@@ -1,0 +1,21 @@
+{
+  "model": "ppo_flymaze_mvp.zip",
+  "sha256": "09ea5e841c7d3c0dc237341d4ebb5753cc33ed76310cf53ab18caad7d72f9a1b",
+  "training": {
+    "seed": 7,
+    "demonstration_seeds": [0],
+    "demonstration_count": 384,
+    "behavior_epochs": 2000,
+    "requested_ppo_timesteps": 512,
+    "actual_ppo_transitions": 768,
+    "post_ppo_behavior_epochs": 1000,
+    "held_out_data_used_for_updates": false
+  },
+  "deterministic_evaluation": {
+    "seeds": [0, 1, 2],
+    "test_straight_unknown": {"successes": 3, "episodes": 3},
+    "train_l_left": {"successes": 2, "episodes": 3},
+    "train_l_right": {"successes": 2, "episodes": 3},
+    "validation_s_turn_complex": {"successes": 2, "episodes": 3}
+  }
+}

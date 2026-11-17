@@ -1,0 +1,25 @@
+[ppo]
+learning_rate = 0.001
+gamma = 0.99
+gae_lambda = 0.95
+entropy_coefficient = 0.005
+n_steps = 128
+batch_size = 64
+network = [64, 64]
+device = "cpu"
+
+[training.scratch]
+total_timesteps = 4096
+seed = 0
+n_envs = 4
+evaluation_seeds = [0, 1, 2]
+
+[training.multitask]
+seed = 7
+demonstration_seeds = [0]
+behavior_epochs = 2000
+post_ppo_behavior_epochs = 1000
+ppo_timesteps = 512
+n_envs = 6
+samples_per_demonstration = 128
+evaluation_seeds = [0, 1, 2]
