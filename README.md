@@ -71,6 +71,85 @@ uv run pytest -q
 
 `uv.lock` 已鎖定 MuJoCo、Gymnasium、Stable-Baselines3、NumPy 與 CPU PyTorch 的相容版本。請勿改用未記錄的 GPU wheel 進行正式比較。
 
+## 自訂地圖：原版使用者的安裝與訓練
+
+**前提：你已依本專案原本的步驟完成 Ubuntu/WSL2、Python 3.12、uv、FlyGym 與 PyTorch 環境安裝，專案位於 `~/GDG_FlyMaze`。** 只需下載擴充 ZIP 與要訓練的 JSON 地圖，沿用既有環境。
+
+| 檔案 | 用途 |
+|---|---|
+| [FlyMaze_Map_Editor.zip](downloads/FlyMaze_Map_Editor.zip) | 首次安裝 JSON 地圖支援與編輯器 |
+| [custom_race_a.json](maps/custom_race_a.json) | 指定地圖 A：8×6 格、最短路線 110 mm |
+| [custom_raceb.json](maps/custom_raceb.json) | 指定地圖 B：10×8 格、最短路線 220 mm，含支路 |
+
+開啟 JSON 後按 **Raw** 儲存；ZIP 按 **Download raw file** 下載。ZIP 已包含這兩張地圖，也提供 JSON 方便日後單獨分享。兩張地圖均保留原始的 14 秒回合時限。
+
+### 1. 首次安裝擴充，只需要一次
+
+將 ZIP 下載到 Ubuntu 的 `~/Downloads`：
+
+```bash
+cd ~/Downloads
+unzip FlyMaze_Map_Editor.zip
+python3 FlyMaze_Map_Editor/install_map_editor.py ~/GDG_FlyMaze
+```
+
+安裝程式會把必要程式加入原專案、備份原本的地圖載入檔，並放入兩張 JSON。不需要另外下載散裝原始碼或重裝訓練環境。若你已裝過此擴充，可跳過本步。來源版本不同時安裝程式會停止，不會強制覆寫。
+
+### 2. 檢查要訓練的地圖
+
+```bash
+cd ~/GDG_FlyMaze
+uv run python -m flymaze.map_editor --check maps/custom_race_a.json
+uv run python -m flymaze.map_editor --check maps/custom_raceb.json
+```
+
+### 3. 選一張指定地圖訓練
+
+地圖 A：
+
+```bash
+cd ~/GDG_FlyMaze
+FLYMAZE_MAP_FILE="$PWD/maps/custom_race_a.json" \
+FLYMAZE_TRAIN_MAP=custom_race_a \
+uv run flymaze train-ppo \
+  --config configs/ppo.toml \
+  --output-directory artifacts/ppo-custom-race-a
+```
+
+地圖 B：
+
+```bash
+cd ~/GDG_FlyMaze
+FLYMAZE_MAP_FILE="$PWD/maps/custom_raceb.json" \
+FLYMAZE_TRAIN_MAP=custom_raceb \
+uv run flymaze train-ppo \
+  --config configs/ppo.toml \
+  --output-directory artifacts/ppo-custom-race-b
+```
+
+`FLYMAZE_MAP_FILE` 指向實際 JSON，`FLYMAZE_TRAIN_MAP` 必須等於其中的 `map_id`。兩個變數只作用於該次命令及其子程序。這是從頭訓練，不是接續既有 checkpoint。
+
+原版程式尚未安裝此擴充時，不會讀取上述兩個變數，仍會使用原本地圖；務必先完成首次安裝。擴充沿用原訓練程式，明確將左彎訓練槽指向你指定的自訂地圖，held-out 地圖維持原樣。
+
+### 4. 之後分享別張地圖，只需 JSON
+
+```bash
+cd ~/GDG_FlyMaze
+cp ~/Downloads/custom_friend.json maps/
+
+FLYMAZE_MAP_FILE="$PWD/maps/custom_friend.json" \
+FLYMAZE_TRAIN_MAP=custom_friend \
+uv run flymaze train-ppo \
+  --config configs/ppo.toml \
+  --output-directory artifacts/ppo-custom-friend
+```
+
+請換成實際檔名與 JSON 裡的 `map_id`。只有要調整訓練參數時才需要改 `configs/ppo.toml`。
+
+要編輯地圖可執行 `uv run python -m flymaze.map_editor --no-browser`，開啟終端機顯示的完整網址。完整操作與還原說明在解壓縮 ZIP 的 `FlyMaze_Map_Editor/docs/MAP_EDITOR.md`。
+
+JSON 格式與路徑連通檢查已通過；完整 FlyGym 模擬與指定地圖的 PPO 訓練仍待 Ubuntu 實測，不保證既有模型能通關。
+
 ## 評估內附模型
 
 ```bash
